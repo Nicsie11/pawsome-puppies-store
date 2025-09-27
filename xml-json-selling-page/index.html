@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pawsome Puppies - Premium Dog Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f8e8f5 50%, #ffe0f0 100%);
+            min-height: 100vh;
+            color: #5a5a5a;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-paw {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255, 182, 193, 0.3);
+            animation: float 8s infinite ease-in-out;
+        }
+
+        .floating-bone {
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            background: rgba(255, 182, 193, 0.2);
+            border-radius: 15px;
+            animation: rotate 10s infinite linear;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: translateX(-100px) rotate(0deg); }
+            100% { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px 20px;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            color: #d63384;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #8e6a7a;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ffb3d1, #ff8fb3);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(255, 179, 209, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 179, 209, 0.6);
+            background: linear-gradient(45deg, #ff8fb3, #ff6b9d);
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            font-size: 1.8em;
+            color: #d63384;
+            text-align: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(255, 182, 193, 0.2);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 182, 193, 0.2);
+            text-align: center;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.3);
+            border-color: rgba(255, 182, 193, 0.5);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            object-fit: cover;
+            border: 3px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .product-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #d63384;
+            margin-bottom: 10px;
+        }
+
+        .product-breed {
+            color: #8e6a7a;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .product-age {
+            color: #8e6a7a;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .tag-price {
+            background: linear-gradient(45deg, #ffb3d1, #ff8fb3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: inline-block;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(255, 179, 209, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .price-updated {
+            animation: priceFlash 0.6s ease-in-out;
+        }
+
+        @keyframes priceFlash {
+            0% { transform: scale(1); background: linear-gradient(45deg, #ffb3d1, #ff8fb3); }
+            50% { transform: scale(1.1); background: linear-gradient(45deg, #28a745, #20c997); }
+            100% { transform: scale(1); background: linear-gradient(45deg, #ffb3d1, #ff8fb3); }
+        }
+
+        .buy-button {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .buy-button:hover {
+            background: linear-gradient(45deg, #20c997, #17a2b8);
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            box-shadow: 0 5px 20px rgba(255, 182, 193, 0.2);
+        }
+
+        .info-section h3 {
+            color: #d63384;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .heart {
+            color: #ff69b4;
+            animation: heartbeat 2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #8e6a7a;
+            font-style: italic;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- XML Data with Inline DTD -->
+    <xml id="xmlData" style="display: none;">
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE store [
+            <!ELEMENT store (info, categories)>
+            <!ELEMENT info (name, description, contact, last_updated)>
+            <!ELEMENT name (#PCDATA)>
+            <!ELEMENT description (#PCDATA)>
+            <!ELEMENT contact (#PCDATA)>
+            <!ELEMENT last_updated (#PCDATA)>
+            <!ELEMENT categories (category+)>
+            <!ELEMENT category (name, products)>
+            <!ELEMENT products (product+)>
+            <!ELEMENT product (name, breed, age, description, tag_price, image)>
+            <!ELEMENT breed (#PCDATA)>
+            <!ELEMENT age (#PCDATA)>
+            <!ELEMENT tag_price (#PCDATA)>
+            <!ELEMENT image (#PCDATA)>
+            <!ATTLIST category id ID #REQUIRED>
+            <!ATTLIST product id ID #REQUIRED>
+        ]>
+        <store>
+            <info>
+                <name>Pawsome Puppies</name>
+                <description>Premium puppies from certified breeders with frequently updated pricing</description>
+                <contact>info@pawsomepuppies.com | (555) PAW-SOME</contact>
+                <last_updated>2025-01-15 10:30 AM</last_updated>
+            </info>
+            <categories>
+                <category id="small_breeds">
+                    <name>Small Breeds</name>
+                    <products>
+                        <product id="p001">
+                            <name>Bella</name>
+                            <breed>French Bulldog</breed>
+                            <age>8 weeks</age>
+                            <description>Adorable and playful French Bulldog puppy with excellent temperament</description>
+                            <tag_price>2500</tag_price>
+                            <image>https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop</image>
+                        </product>
+                        <product id="p002">
+                            <name>Charlie</name>
+                            <breed>Pomeranian</breed>
+                            <age>10 weeks</age>
+                            <description>Fluffy and energetic Pomeranian ready for a loving home</description>
+                            <tag_price>1800</tag_price>
+                            <image>https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=400&h=300&fit=crop</image>
+                        </product>
+                        <product id="p003">
+                            <name>Daisy</name>
+                            <breed>Yorkshire Terrier</breed>
+                            <age>9 weeks</age>
+                            <description>Tiny but mighty Yorkie with a big personality</description>
+                            <tag_price>2200</tag_price>
+                            <image>https://images.unsplash.com/photo-1544359313-4b132d6e6ba6?w=400&h=300&fit=crop</image>
+                        </product>
+                    </products>
+                </category>
+                <category id="medium_breeds">
+                    <name>Medium Breeds</name>
+                    <products>
+                        <product id="p004">
+                            <name>Max</name>
+                            <breed>Golden Retriever</breed>
+                            <age>12 weeks</age>
+                            <description>Friendly and loyal Golden Retriever perfect for families</description>
+                            <tag_price>1200</tag_price>
+                            <image>https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop</image>
+                        </product>
+                        <product id="p005">
+                            <name>Luna</name>
+                            <breed>Border Collie</breed>
+                            <age>9 weeks</age>
+                            <description>Intelligent and active Border Collie puppy</description>
+                            <tag_price>1500</tag_price>
+                            <image>https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400&h=300&fit=crop</image>
+                        </product>
+                        <product id="p006">
+                            <name>Cooper</name>
+                            <breed>Australian Shepherd</breed>
+                            <age>11 weeks</age>
+                            <description>Beautiful Aussie with striking blue eyes</description>
+                            <tag_price>1800</tag_price>
+                            <image>https://images.unsplash.com/photo-1527082395-e939b847da0d?w=400&h=300&fit=crop</image>
+                        </product>
+                    </products>
+                </category>
+                <category id="large_breeds">
+                    <name>Large Breeds</name>
+                    <products>
+                        <product id="p007">
+                            <name>Rocky</name>
+                            <breed>German Shepherd</breed>
+                            <age>11 weeks</age>
+                            <description>Brave and protective German Shepherd with excellent bloodline</description>
+                            <tag_price>2000</tag_price>
+                            <image>https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=300&fit=crop</image>
+                        </product>
+                        <product id="p008">
+                            <name>Thor</name>
+                            <breed>Rottweiler</breed>
+                            <age>10 weeks</age>
+                            <description>Strong and loyal Rottweiler puppy with gentle nature</description>
+                            <tag_price>1900</tag_price>
+                            <image>https://images.unsplash.com/photo-1567752881298-894bb81f9379?w=400&h=300&fit=crop</image>
+                        </product>
+                    </products>
+                </category>
+            </categories>
+        </store>
+    </xml>
+
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-paw" style="top: 10%; left: 10%; animation-delay: 0s;">🐾</div>
+        <div class="floating-paw" style="top: 20%; left: 80%; animation-delay: 2s;">🐾</div>
+        <div class="floating-paw" style="top: 60%; left: 15%; animation-delay: 4s;">🐾</div>
+        <div class="floating-paw" style="top: 80%; left: 70%; animation-delay: 6s;">🐾</div>
+        <div class="floating-bone" style="top: 30%; animation-delay: 1s;"></div>
+        <div class="floating-bone" style="top: 70%; animation-delay: 5s;"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🐕 Pawsome Puppies <span class="heart">💖</span></h1>
+            <p class="subtitle">Premium Puppies with Live Pricing Updates</p>
+            <div class="controls">
+                <button onclick="refreshProducts()">🔄 Refresh Products</button>
+                <button onclick="updatePrices()">💰 Update Prices</button>
+                <button onclick="loadFromJSON()">📋 Load JSON</button>
+                <button onclick="loadFromXML()">🔖 Load XML</button>
+            </div>
+            <div class="last-updated" id="lastUpdated">Last Updated: Loading...</div>
+        </header>
+
+        <div class="info-section" id="storeInfo">
+            <!-- Store info will be loaded here -->
+        </div>
+
+        <div id="categories-container">
+            <!-- Categories and products will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // JSON Data (mirrors XML structure)
+        const jsonData = {
+            "store": {
+                "info": {
+                    "name": "Pawsome Puppies",
+                    "description": "Premium puppies from certified breeders with frequently updated pricing",
+                    "contact": "info@pawsomepuppies.com | (555) PAW-SOME",
+                    "last_updated": "2025-01-15 10:30 AM"
+                },
+                "categories": [
+                    {
+                        "id": "small_breeds",
+                        "name": "Small Breeds",
+                        "products": [
+                            {
+                                "id": "p001",
+                                "name": "Bella",
+                                "breed": "French Bulldog",
+                                "age": "8 weeks",
+                                "description": "Adorable and playful French Bulldog puppy with excellent temperament",
+                                "tag_price": 2500,
+                                "image": "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop"
+                            },
+                            {
+                                "id": "p002",
+                                "name": "Charlie",
+                                "breed": "Pomeranian",
+                                "age": "10 weeks",
+                                "description": "Fluffy and energetic Pomeranian ready for a loving home",
+                                "tag_price": 1800,
+                                "image": "https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=400&h=300&fit=crop"
+                            },
+                            {
+                                "id": "p003",
+                                "name": "Daisy",
+                                "breed": "Yorkshire Terrier",
+                                "age": "9 weeks",
+                                "description": "Tiny but mighty Yorkie with a big personality",
+                                "tag_price": 2200,
+                                "image": "https://images.unsplash.com/photo-1544359313-4b132d6e6ba6?w=400&h=300&fit=crop"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "medium_breeds",
+                        "name": "Medium Breeds",
+                        "products": [
+                            {
+                                "id": "p004",
+                                "name": "Max",
+                                "breed": "Golden Retriever",
+                                "age": "12 weeks",
+                                "description": "Friendly and loyal Golden Retriever perfect for families",
+                                "tag_price": 1200,
+                                "image": "https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop"
+                            },
+                            {
+                                "id": "p005",
+                                "name": "Luna",
+                                "breed": "Border Collie",
+                                "age": "9 weeks",
+                                "description": "Intelligent and active Border Collie puppy",
+                                "tag_price": 1500,
+                                "image": "https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400&h=300&fit=crop"
+                            },
+                            {
+                                "id": "p006",
+                                "name": "Cooper",
+                                "breed": "Australian Shepherd",
+                                "age": "11 weeks",
+                                "description": "Beautiful Aussie with striking blue eyes",
+                                "tag_price": 1800,
+                                "image": "https://images.unsplash.com/photo-1527082395-e939b847da0d?w=400&h=300&fit=crop"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "large_breeds",
+                        "name": "Large Breeds",
+                        "products": [
+                            {
+                                "id": "p007",
+                                "name": "Rocky",
+                                "breed": "German Shepherd",
+                                "age": "11 weeks",
+                                "description": "Brave and protective German Shepherd with excellent bloodline",
+                                "tag_price": 2000,
+                                "image": "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=400&h=300&fit=crop"
+                            },
+                            {
+                                "id": "p008",
+                                "name": "Thor",
+                                "breed": "Rottweiler",
+                                "age": "10 weeks",
+                                "description": "Strong and loyal Rottweiler puppy with gentle nature",
+                                "tag_price": 1900,
+                                "image": "https://images.unsplash.com/photo-1567752881298-894bb81f9379?w=400&h=300&fit=crop"
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentDataSource = 'json';
+        let currentData = null;
+
+        function loadFromXML() {
+            try {
+                const xmlElement = document.getElementById('xmlData');
+                const xmlText = xmlElement.innerHTML;
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+                
+                const parserError = xmlDoc.getElementsByTagName("parsererror");
+                if (parserError.length > 0) {
+                    alert("XML parsing error!");
+                    return;
+                }
+
+                currentData = xmlDoc;
+                currentDataSource = 'xml';
+                displayProducts();
+                alert("✅ Loaded from XML with DTD validation!");
+            } catch (error) {
+                alert("Error loading XML: " + error.message);
+            }
+        }
+
+        function loadFromJSON() {
+            try {
+                currentData = jsonData;
+                currentDataSource = 'json';
+                displayProducts();
+                alert("✅ Loaded from JSON data!");
+            } catch (error) {
+                alert("Error loading JSON: " + error.message);
+            }
+        }
+
+        function refreshProducts() {
+            if (!currentData) {
+                loadFromJSON(); // Default load
+            } else {
+                displayProducts();
+            }
+            
+            // Update timestamp
+            const now = new Date();
+            const timestamp = now.toLocaleString();
+            document.getElementById('lastUpdated').textContent = `Last Refreshed: ${timestamp}`;
+            
+            alert("🔄 Products refreshed successfully!");
+        }
+
+        function updatePrices() {
+            if (!currentData) {
+                alert("Please load data first!");
+                return;
+            }
+
+            // Update prices in current data
+            if (currentDataSource === 'json') {
+                jsonData.store.categories.forEach(category => {
+                    category.products.forEach(product => {
+                        const change = (Math.random() - 0.5) * 400; // ±$200 change
+                        product.tag_price = Math.max(800, Math.floor(product.tag_price + change));
+                    });
+                });
+            } else if (currentDataSource === 'xml') {
+                const products = currentData.getElementsByTagName('product');
+                for (let product of products) {
+                    const priceElement = product.getElementsByTagName('tag_price')[0];
+                    const currentPrice = parseInt(priceElement.textContent);
+                    const change = (Math.random() - 0.5) * 400;
+                    const newPrice = Math.max(800, Math.floor(currentPrice + change));
+                    priceElement.textContent = newPrice;
+                }
+            }
+
+            displayProducts();
+            
+            // Add flash animation to all prices
+            const priceElements = document.querySelectorAll('.tag-price');
+            priceElements.forEach(element => {
+                element.classList.add('price-updated');
+                setTimeout(() => {
+                    element.classList.remove('price-updated');
+                }, 600);
+            });
+
+            alert("💰 Prices updated! Market fluctuations applied.");
+        }
+
+        function displayProducts() {
+            displayStoreInfo();
+            displayCategories();
+        }
+
+        function displayStoreInfo() {
+            const infoContainer = document.getElementById('storeInfo');
+            let storeInfo;
+
+            if (currentDataSource === 'xml') {
+                const infoElement = currentData.getElementsByTagName('info')[0];
+                storeInfo = {
+                    name: infoElement.getElementsByTagName('name')[0].textContent,
+                    description: infoElement.getElementsByTagName('description')[0].textContent,
+                    contact: infoElement.getElementsByTagName('contact')[0].textContent,
+                    last_updated: infoElement.getElementsByTagName('last_updated')[0].textContent
+                };
+            } else {
+                storeInfo = currentData.store.info;
+            }
+
+            infoContainer.innerHTML = `
+                <h3>📍 Store Information</h3>
+                <p><strong>Name:</strong> ${storeInfo.name}</p>
+                <p><strong>Description:</strong> ${storeInfo.description}</p>
+                <p><strong>Contact:</strong> ${storeInfo.contact}</p>
+                <p><strong>Data Source:</strong> ${currentDataSource.toUpperCase()}</p>
+            `;
+        }
+
+        function displayCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+
+            let categories = [];
+
+            if (currentDataSource === 'xml') {
+                const categoryElements = currentData.getElementsByTagName('category');
+                for (let category of categoryElements) {
+                    const categoryData = {
+                        id: category.getAttribute('id'),
+                        name: category.getElementsByTagName('name')[0].textContent,
+                        products: []
+                    };
+                    
+                    const products = category.getElementsByTagName('product');
+                    for (let product of products) {
+                        categoryData.products.push({
+                            id: product.getAttribute('id'),
+                            name: product.getElementsByTagName('name')[0].textContent,
+                            breed: product.getElementsByTagName('breed')[0].textContent,
+                            age: product.getElementsByTagName('age')[0].textContent,
+                            description: product.getElementsByTagName('description')[0].textContent,
+                            tag_price: parseInt(product.getElementsByTagName('tag_price')[0].textContent),
+                            image: product.getElementsByTagName('image')[0].textContent
+                        });
+                    }
+                    categories.push(categoryData);
+                }
+            } else {
+                categories = currentData.store.categories;
+            }
+
+            categories.forEach(category => {
+                const categorySection = document.createElement('div');
+                categorySection.className = 'category-section';
+                
+                const categoryTitle = document.createElement('h2');
+                categoryTitle.className = 'category-title';
+                categoryTitle.textContent = `${category.name} (${category.products.length} available)`;
+                
+                const productsGrid = document.createElement('div');
+                productsGrid.className = 'products-grid';
+                
+                category.products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" class="product-image" 
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhkN2RhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOHB4IiBmaWxsPSIjZDYzMzg0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iMC4zZW0iPvCQkpY8L3RleHQ+PC9zdmc+'">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-breed">${product.breed}</div>
+                        <div class="product-age">${product.age} old</div>
+                        <div class="tag-price">$${product.tag_price.toLocaleString()}</div>
+                        <p style="margin-bottom: 15px; color: #8e6a7a;">${product.description}</p>
+                        <button class="buy-button" onclick="adoptPuppy('${product.name}', ${product.tag_price})">
+                            🏠 Adopt ${product.name}
+                        </button>
+                    `;
+                    productsGrid.appendChild(productCard);
+                });
+                
+                categorySection.appendChild(categoryTitle);
+                categorySection.appendChild(productsGrid);
+                container.appendChild(categorySection);
+            });
+        }
+
+        function adoptPuppy(name, price) {
+            alert(`🎉 Thank you for choosing to adopt ${name}!\n💰 Total Cost: $${price.toLocaleString()}\n📞 We'll contact you within 24 hours to arrange pickup!\n🐕💕`);
+        }
+
+        // Initialize with JSON data
+        window.onload = function() {
+            loadFromJSON();
+        };
+
+        // Add more floating elements periodically
+        setInterval(() => {
+            const bgAnimation = document.querySelector('.bg-animation');
+            const paw = document.createElement('div');
+            paw.className = 'floating-paw';
+            paw.innerHTML = '🐾';
+            paw.style.top = Math.random() * 100 + '%';
+            paw.style.left = '-50px';
+            paw.style.animationDuration = (5 + Math.random() * 5) + 's';
+            bgAnimation.appendChild(paw);
+
+            setTimeout(() => {
+                paw.remove();
+            }, 10000);
+        }, 3000);
+    </script>
+</body>
+</html>
